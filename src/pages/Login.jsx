@@ -18,7 +18,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (currentUser) {
-      navigate('/home');
+      navigate('/');
     }
   }, [currentUser, navigate])
 
@@ -29,7 +29,7 @@ export default function LoginPage() {
       setLoginEmail('');
       setLoginPassword('');
       setError('');
-      navigate('/home');
+      navigate('/');
     } catch (error) {
       console.error(error);
       setError('invalid-login-credentials');
