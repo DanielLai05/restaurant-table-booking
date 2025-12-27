@@ -17,10 +17,10 @@ function NavigationBar() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="#home" >MENU</Nav.Link>
-              <Nav.Link href="#link" >ABOUT US</Nav.Link>
-              <Nav.Link href="#link" >GALLERY</Nav.Link>
-              <Nav.Link href="#link" >CONTACT</Nav.Link>
+              <Nav.Link href="/menu" >MENU</Nav.Link>
+              <Nav.Link href="/" >ABOUT US</Nav.Link>
+              <Nav.Link href="/" >GALLERY</Nav.Link>
+              <Nav.Link href="/" >CONTACT</Nav.Link>
             </Nav>
             <Nav>
               {
@@ -51,6 +51,11 @@ function NavigationBar() {
         </Container>
       </Navbar>
       <Outlet />
+      <footer className='bg-dark text-light text-center p-4'>
+        <div>&copy; 2025 Jerome's Steakhouse. All rights reserved.</div>
+        <div>📍 123 Premium Boulevard, Cyberjaya</div>
+        <div>Open Monday - Saturday | 5:00 PM - 11:00 PM</div>
+      </footer>
     </>
   );
 }

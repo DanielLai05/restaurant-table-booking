@@ -4,6 +4,7 @@ import AuthProvider from "./components/AuthProvider";
 import Home from "./pages/Home";
 import NavigationBar from "./components/NavigationBar";
 import NotFound from "./pages/NotFound";
+import Menu from "./pages/Menu";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<NavigationBar />}>
             <Route index element={<Home />} />
+            <Route path="/menu" element={<Menu />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

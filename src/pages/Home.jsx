@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { AuthContext } from '../context';
 import { Button, Col, Container, FloatingLabel, Form, Modal, Row } from 'react-bootstrap';
 import { auth } from '../firebase';
+import MakeReservationModal from '../components/MakeReservationModal';
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -11,7 +12,6 @@ export default function Home() {
   const navigate = useNavigate();
 
   const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => setShowModal(false);
 
   const handleLogout = () => {
     auth.signOut();
@@ -35,88 +35,8 @@ export default function Home() {
 
 
       </Container>
-      <footer className='bg-dark text-light text-center p-4'>
-        <div>&copy; 2025 Jerome's Steakhouse. All rights reserved.</div>
-        <div>📍 123 Premium Boulevard, Cyberjaya</div>
-        <div>Open Monday - Saturday | 5:00 PM - 11:00 PM</div>
-      </footer>
 
-      <Modal show={showModal} onHide={handleCloseModal} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>MAKE A RESERVATION</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group as={Row} className="mb-3" >
-              <Form.Label column sm="2">
-                Date
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type='date'
-                />
-              </Col>
-            </Form.Group>
-
-            <Form.Group as={Row} className="mb-3" >
-              <Form.Label column sm="2">
-                Time
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type='time'
-
-                />
-              </Col>
-            </Form.Group>
-
-
-
-            <Form.Group className='mt-2'>
-              <FloatingLabel
-                label="Number of Guest"
-                className="mb-3"
-              >
-                <Form.Control type="number" />
-              </FloatingLabel>
-            </Form.Group>
-
-            <Form.Group className='mt-2'>
-              <FloatingLabel
-                label="Full Name"
-                className="mb-3"
-              >
-                <Form.Control type="text" placeholder="Jerome Hehe" />
-              </FloatingLabel>
-            </Form.Group>
-
-            <Form.Group className='mt-2'>
-              <FloatingLabel
-                label="Email address"
-                className="mb-3"
-              >
-                <Form.Control type="email" placeholder="name@example.com" />
-              </FloatingLabel>
-            </Form.Group>
-
-            <Form.Group className='mt-2'>
-              <FloatingLabel
-                label="Phone number"
-                className="mb-3"
-              >
-                <Form.Control type="text" placeholder="011123456789" />
-              </FloatingLabel>
-            </Form.Group>
-
-          </Form>
-        </Modal.Body>
-        <Modal.Footer className='d-flex justify-content-center'>
-
-          <Button variant="warning" onClick={handleCloseModal}>
-            CONFIRM RESERVATION
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <MakeReservationModal showModal={showModal} setShowModal={setShowModal} />
     </div>
   )
 }
