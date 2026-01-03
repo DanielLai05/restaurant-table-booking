@@ -28,7 +28,7 @@ function NavigationBar() {
               <Nav.Link href="/">ABOUT US</Nav.Link>
               {currentUser && (
                 <>
-                  <Nav.Link className="d-lg-none" href="/reservation">
+                  <Nav.Link className="d-lg-none" onClick={() => navigate('/reservation')}>
                     VIEW RESERVATION
                   </Nav.Link>
                   <Nav.Link
