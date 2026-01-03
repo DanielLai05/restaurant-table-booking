@@ -4,6 +4,7 @@ import { AuthContext } from '../context';
 import { Col, Container, Row, Form, Button, Modal } from 'react-bootstrap';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
+import axios from 'axios';
 
 export default function LoginPage() {
   const [loginEmail, setLoginEmail] = useState('');
@@ -12,9 +13,11 @@ export default function LoginPage() {
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupReEnterPassword, setSignupReEnterPassword] = useState('');
+  const [signupName, setSignupName] = useState('')
   const [modalShow, setModalShow] = useState(false);
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const baseUrl = 'http://localhost:3000';
 
   useEffect(() => {
     if (currentUser) {
@@ -56,7 +59,15 @@ export default function LoginPage() {
       return;
     }
     try {
-      await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
+      const { user } = await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
+      const { uid, email } = user;
+      // console.log(`${uid} ${email}`);
+      const res = await axios.post(`${baseUrl}/signup`, {
+        id: uid,
+        name: signupName,
+        email
+      })
+      console.log(res);
       setError('')
     } catch (error) {
       console.error(error);
@@ -132,6 +143,16 @@ export default function LoginPage() {
         <Modal.Body>
           <Form onSubmit={handleSignup} className='p-2'>
             <Form.Group>
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                value={signupName}
+                placeholder='enter your name here'
+                type='text'
+                onChange={(e) => setSignupName(e.target.value)}
+                required
+              />
+            </Form.Group>
+            <Form.Group className='mt-3'>
               <Form.Label>Email</Form.Label>
               <Form.Control
                 value={signupEmail}

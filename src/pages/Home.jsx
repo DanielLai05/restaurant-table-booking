@@ -3,19 +3,14 @@ import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router';
 import { AuthContext } from '../context';
 import { Button, Col, Container, FloatingLabel, Form, Modal, Row } from 'react-bootstrap';
-import { auth } from '../firebase';
 import MakeReservationModal from '../components/MakeReservationModal';
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const { currentUser } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const handleShowModal = () => setShowModal(true);
 
-  const handleLogout = () => {
-    auth.signOut();
-  }
 
   return (
     <div>
@@ -31,8 +26,6 @@ export default function Home() {
         >
           RESERVE A TABLE
         </Button>
-        {/* <Button onClick={handleLogout}>Logout</Button> */}
-
 
       </Container>
 
