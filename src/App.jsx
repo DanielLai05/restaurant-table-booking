@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import NavigationBar from "./components/NavigationBar";
 import NotFound from "./pages/NotFound";
 import Menu from "./pages/Menu";
+import Reservation from "./pages/Reservation";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="/" element={<NavigationBar />}>
             <Route index element={<Home />} />
             <Route path="/menu" element={<Menu />} />
+            <Route path="/reservation" element={<Reservation />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

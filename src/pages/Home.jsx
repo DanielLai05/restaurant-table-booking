@@ -7,8 +7,6 @@ import MakeReservationModal from '../components/MakeReservationModal';
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
-  const { currentUser } = useContext(AuthContext);
-
   const handleShowModal = () => setShowModal(true);
 
 
