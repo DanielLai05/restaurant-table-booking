@@ -1,115 +1,159 @@
 import React, { useContext, useState } from 'react'
-import { FloatingLabel, Form, Modal, Row, Col, Button } from 'react-bootstrap';
+import { FloatingLabel, Form, Modal, Row, Col, Button, Spinner } from 'react-bootstrap';
 import { AuthContext } from '../context';
 import { useNavigate } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { createReservation } from '../features/reservation/reservationsSlice';
 
 
 export default function MakeReservationModal({ showModal, setShowModal }) {
 
-  const [date, setDate] = useState(null);
-  const { currentUser } = useContext(AuthContext);
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+  const [numberOfGuest, setNumberOfGuest] = useState(1);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const { currentUser, userDetails } = useContext(AuthContext);
+  const { loading } = useSelector(state => state.reservations);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleCloseModal = () => setShowModal(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('submitted');
+    dispatch(createReservation({ date, time, numberOfGuest, title, description, fullName, email, phoneNumber, userId: userDetails.id }));
+  }
 
   return (
     <Modal show={showModal} onHide={handleCloseModal} centered>
       {
         currentUser ? (
           <>
-            <Modal.Header closeButton>
-              <Modal.Title>MAKE A RESERVATION</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form>
-                <Form.Group as={Row} className="mb-3" >
+            <Form onSubmit={handleSubmit}>
+              <Modal.Header closeButton>
+                <Modal.Title>MAKE A RESERVATION</Modal.Title>
+              </Modal.Header>
+
+              <Modal.Body>
+                <Form.Group as={Row} className="mb-3">
                   <Form.Label column sm="2">
                     Date
                   </Form.Label>
                   <Col sm="10">
                     <Form.Control
-                      type='date'
+                      type="date"
                       value={date}
-                      onChange={(e) => console.log(e.target.value)}
+                      onChange={(e) => setDate(e.target.value)}
+                      required
                     />
                   </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} className="mb-3" >
+                <Form.Group as={Row} className="mb-3">
                   <Form.Label column sm="2">
                     Time
                   </Form.Label>
                   <Col sm="10">
                     <Form.Control
-                      type='time'
-                      onChange={(e) => console.log(e.target.value)}
+                      type="time"
+                      value={time}
+                      onChange={(e) => setTime(e.target.value)}
+                      required
                     />
                   </Col>
                 </Form.Group>
 
-
-
-                <Form.Group className='mt-2'>
-                  <FloatingLabel
-                    label="Number of Guest"
-                    className="mb-3"
-                  >
-                    <Form.Control type="number" />
+                <Form.Group className="mt-2">
+                  <FloatingLabel label="Number of Guest" className="mb-3">
+                    <Form.Control
+                      type="number"
+                      value={numberOfGuest}
+                      onChange={(e) => setNumberOfGuest(e.target.value)}
+                      required
+                    />
                   </FloatingLabel>
                 </Form.Group>
 
-                <Form.Group className='mt-2'>
-                  <FloatingLabel
-                    label="Title"
-                    className="mb-3"
-                  >
-                    <Form.Control type="text" placeholder="Jerome Party" />
+                <Form.Group className="mt-2">
+                  <FloatingLabel label="Title" className="mb-3">
+                    <Form.Control
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Jerome Party"
+                      required
+                    />
                   </FloatingLabel>
                 </Form.Group>
 
-                <Form.Group className='mt-2'>
-                  <FloatingLabel
-                    label="Description"
-                    className="mb-3"
-                  >
-                    <Form.Control type="text" placeholder="Jerome Birthday party" />
+                <Form.Group className="mt-2">
+                  <FloatingLabel label="Description" className="mb-3">
+                    <Form.Control
+                      type="text"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Jerome Birthday party"
+                      required
+                    />
                   </FloatingLabel>
                 </Form.Group>
 
-                <Form.Group className='mt-2'>
-                  <FloatingLabel
-                    label="Full Name"
-                    className="mb-3"
-                  >
-                    <Form.Control type="text" placeholder="Jerome Hehe" />
+                <Form.Group className="mt-2">
+                  <FloatingLabel label="Full Name" className="mb-3">
+                    <Form.Control
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Jerome Hehe"
+                      required
+                    />
                   </FloatingLabel>
                 </Form.Group>
 
-                <Form.Group className='mt-2'>
-                  <FloatingLabel
-                    label="Email address"
-                    className="mb-3"
-                  >
-                    <Form.Control type="email" placeholder="name@example.com" />
+                <Form.Group className="mt-2">
+                  <FloatingLabel label="Email address" className="mb-3">
+                    <Form.Control
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@example.com"
+                      required
+                    />
                   </FloatingLabel>
                 </Form.Group>
 
-                <Form.Group className='mt-2'>
-                  <FloatingLabel
-                    label="Phone number"
-                    className="mb-3"
-                  >
-                    <Form.Control type="text" placeholder="011123456789" />
+                <Form.Group className="mt-2">
+                  <FloatingLabel label="Phone number" className="mb-3">
+                    <Form.Control
+                      type="text"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      placeholder="011123456789"
+                      required
+                    />
                   </FloatingLabel>
                 </Form.Group>
+              </Modal.Body>
 
-              </Form>
-            </Modal.Body>
-            <Modal.Footer className='d-flex justify-content-center'>
+              <Modal.Footer className="d-flex justify-content-center">
+                <Button variant="warning" type="submit">
+                  {
+                    loading ? (
+                      <Spinner animation="border" role="status" size='sm'>
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    ) :
+                      'CONFIRM RESERVATION'
+                  }
+                </Button>
+              </Modal.Footer>
+            </Form>
 
-              <Button variant="warning" onClick={handleCloseModal}>
-                CONFIRM RESERVATION
-              </Button>
-            </Modal.Footer>
           </>
         ) : (
           <>

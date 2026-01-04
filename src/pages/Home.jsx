@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 
-import { Button, Col, Container, FloatingLabel, Form, Modal, Row } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import MakeReservationModal from '../components/MakeReservationModal';
 
 export default function Home() {
