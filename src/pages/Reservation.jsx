@@ -4,7 +4,6 @@ import { Container, Card, Row, Col, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchReservationsByUser } from "../features/reservation/reservationsSlice";
-import store from "../store";
 
 export default function Reservation() {
   const { reservations } = useSelector(store => store.reservations);

@@ -1,7 +1,5 @@
 import React, { useContext, useState } from 'react'
 
-import { useNavigate } from 'react-router';
-import { AuthContext } from '../context';
 import { Button, Col, Container, FloatingLabel, Form, Modal, Row } from 'react-bootstrap';
 import MakeReservationModal from '../components/MakeReservationModal';
 
