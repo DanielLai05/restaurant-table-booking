@@ -6,6 +6,7 @@ import axios from "axios";
 export default function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
   const fetchUser = async (userId) => {
     try {
@@ -26,13 +27,15 @@ export default function AuthProvider({ children }) {
       } else {
         setUserDetails(null);
       }
+
+      setAuthLoading(false);
     });
 
     return unsubscribe;
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, userDetails }}>
+    <AuthContext.Provider value={{ currentUser, userDetails, authLoading }}>
       {children}
     </AuthContext.Provider>
   )
