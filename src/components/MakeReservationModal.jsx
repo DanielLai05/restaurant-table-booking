@@ -25,9 +25,10 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('submitted');
     dispatch(createReservation({ date, time, numberOfGuest, title, description, fullName, email, phoneNumber, userId: userDetails.id }));
   }
+
+  //add reservation created message in react alert
 
   return (
     <Modal show={showModal} onHide={handleCloseModal} centered>
@@ -138,6 +139,8 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
                     />
                   </FloatingLabel>
                 </Form.Group>
+
+
               </Modal.Body>
 
               <Modal.Footer className="d-flex justify-content-center">

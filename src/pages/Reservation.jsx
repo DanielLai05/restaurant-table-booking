@@ -1,11 +1,13 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context";
-import { Container, Card, Row, Col, Spinner } from "react-bootstrap";
+import { Container, Card, Row, Col, Spinner, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchReservationsByUser } from "../features/reservation/reservationsSlice";
+import { deleteReservaiton, fetchReservationsByUser } from "../features/reservation/reservationsSlice";
 
 export default function Reservation() {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedReservationId, setSelectedReservationId] = useState(null);
   const { reservations } = useSelector(store => store.reservations);
   const { loading } = useSelector(store => store.reservations);
   const { userDetails, currentUser, authLoading } = useContext(AuthContext);
@@ -16,10 +18,22 @@ export default function Reservation() {
     if (!authLoading && !currentUser) {
       navigate('/');
     } else if (currentUser) {
-      dispatch(fetchReservationsByUser(2));
+      dispatch(fetchReservationsByUser(userDetails.id));
     }
 
   }, [currentUser, navigate, dispatch, userDetails, authLoading]);
+
+  const handleCloseDeleteModal = () => setShowDeleteModal(false);
+  const handleShowDeleteModal = (id) => {
+    setSelectedReservationId(id);
+    setShowDeleteModal(true);
+
+  };
+
+  const handleDeleteReservation = () => {
+    dispatch(deleteReservaiton(selectedReservationId));
+    handleCloseDeleteModal();
+  }
 
   return (
     <Container className="py-4">
@@ -34,12 +48,12 @@ export default function Reservation() {
           </Spinner>
         ) : (
           <Row className="g-4">
-            {reservations.map((reservation, index) => (
+            {reservations && reservations.map((reservation, index) => (
               <Col md={6} key={index}>
                 <Card>
                   <Card.Body>
                     <Card.Title>
-                      Reservation #{index + 1}
+                      Reservation #{reservation.id}
                     </Card.Title>
 
                     <Card.Text>
@@ -71,6 +85,10 @@ export default function Reservation() {
                       <strong>Description:</strong>{" "}
                       {reservation.description}
                     </Card.Text>
+
+                    <Button variant="primary" className="me-2" onClick={() => navigate(`/reservation/${reservation.id}`)}>UPDATE</Button>
+                    <Button variant="danger" onClick={() => handleShowDeleteModal(reservation.id)}>DELETE</Button>
+
                   </Card.Body>
                 </Card>
               </Col>
@@ -78,7 +96,20 @@ export default function Reservation() {
           </Row>
         )
       }
-
+      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Reservation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this reservation</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDeleteModal}>
+            CANCEL
+          </Button>
+          <Button variant="danger" onClick={handleDeleteReservation}>
+            DELETE
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

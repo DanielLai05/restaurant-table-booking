@@ -8,6 +8,7 @@ export const fetchReservationsByUser = createAsyncThunk(
   async (userId) => {
     try {
       const response = await axios.get(`${baseUrl}/reservation/${userId}`);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -47,6 +48,41 @@ export const createReservation = createAsyncThunk(
   }
 );
 
+export const deleteReservaiton = createAsyncThunk(
+  "reservations/deleteReservation",
+  async (reservationId) => {
+    if (!reservationId) {
+      throw new Error('Missing reservation id');
+    }
+
+    try {
+      const response = await axios.delete(`${baseUrl}/reservation/${reservationId}`);
+      return response.data.deletedReservation.id;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+
+  }
+)
+
+export const updateReservation = createAsyncThunk(
+  "reservation/updateReservation",
+  async (reservationData) => {
+    if (reservationData) {
+      throw new Error('Missing reservation id');
+    }
+
+    try {
+      const response = await axios.put(`${baseUrl}/reservation`, reservationData);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+)
+
 const reservationsSlice = createSlice({
   name: "reservations",
   initialState: {
@@ -75,6 +111,28 @@ const reservationsSlice = createSlice({
         state.loading = false;
       })
       .addCase(createReservation.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteReservaiton.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteReservaiton.fulfilled, (state, action) => {
+        const newReservations = state.reservations.filter((reservation) => reservation.id !== action.payload)
+        state.reservations = newReservations;
+        state.loading = false;
+      })
+      .addCase(deleteReservaiton.rejected, (state) => {
+        state.loading = false
+      })
+      .addCase(updateReservation.pending, (state) => {
+        state.loading = false;
+      })
+      .addCase(updateReservation.fulfilled, (state, action) => {
+        state.reservations = state.reservations.map((reservation) => (
+          reservation.id === action.payload.id ? action.payload : reservation
+        ))
+      })
+      .addCase(updateReservation.rejected, (state) => {
         state.loading = false;
       })
   },

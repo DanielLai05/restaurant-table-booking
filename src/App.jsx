@@ -8,6 +8,7 @@ import Menu from "./pages/Menu";
 import Reservation from "./pages/Reservation";
 import { Provider } from "react-redux";
 import store from "./store";
+import UpdateReservation from "./pages/UpdateReservation";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
               <Route index element={<Home />} />
               <Route path="/menu" element={<Menu />} />
               <Route path="/reservation" element={<Reservation />} />
+              <Route path="/reservation/:id" element={<UpdateReservation />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
