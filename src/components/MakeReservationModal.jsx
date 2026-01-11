@@ -18,7 +18,7 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const { currentUser, userDetails } = useContext(AuthContext);
-  const { loading, success } = useSelector(state => state.reservations);
+  const { loading, success, error } = useSelector(state => state.reservations);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -40,13 +40,11 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
   };
 
   useEffect(() => {
-    if (success && !loading) {
+    if (success) {
       setShowAlert(true);
       resetForm();
-    } else {
-      dispatch(resetReservationState());
     }
-  }, [success, loading])
+  }, [success])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -165,8 +163,15 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
                 </Form.Group>
 
                 {
-                  showAlert &&
-                  <Alert variant='success' onClose={() => setShowAlert(false)} dismissible>
+                  error && !loading &&
+                  <Alert variant='danger' dismissible>
+                    An error occour. Please try again later.
+                  </Alert>
+                }
+
+                {
+                  showAlert && !error &&
+                  < Alert variant='success' onClose={() => setShowAlert(false)} dismissible>
                     Congratulation! Your reservation has been confirm.
                   </Alert>
 
@@ -203,6 +208,6 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
           </>
         )
       }
-    </Modal>
+    </Modal >
   )
 }

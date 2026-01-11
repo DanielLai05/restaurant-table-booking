@@ -8,7 +8,6 @@ export const fetchReservationsByUser = createAsyncThunk(
   async (userId) => {
     try {
       const response = await axios.get(`${baseUrl}/reservation/${userId}`);
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -102,12 +101,14 @@ const reservationsSlice = createSlice({
   initialState: {
     reservations: [],
     loading: false,
-    success: false
+    success: false,
+    error: false,
   },
   reducers: {
     resetReservationState: (state) => {
       state.loading = false;
       state.success = false;
+      state.error = false;
     }
   },
   extraReducers: (builder) => {
@@ -116,16 +117,19 @@ const reservationsSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchReservationsByUser.fulfilled, (state, action) => {
+        state.error = false;
         state.reservations = action.payload;
         state.loading = false;
       })
       .addCase(fetchReservationsByUser.rejected, (state) => {
         state.loading = false;
+        state.error = true;
       })
       .addCase(createReservation.pending, (state) => {
         state.loading = true;
       })
       .addCase(createReservation.fulfilled, (state, action) => {
+        state.error = false
         state.success = false;
         if (action.payload) {
           state.reservations.push(action.payload);
@@ -134,23 +138,27 @@ const reservationsSlice = createSlice({
         state.success = true;
       })
       .addCase(createReservation.rejected, (state) => {
+        state.error = true;
         state.loading = false;
       })
       .addCase(deleteReservaiton.pending, (state) => {
         state.loading = true;
       })
       .addCase(deleteReservaiton.fulfilled, (state, action) => {
+        state.error = false;
         const newReservations = state.reservations.filter((reservation) => reservation.id !== action.payload)
         state.reservations = newReservations;
         state.loading = false;
       })
       .addCase(deleteReservaiton.rejected, (state) => {
-        state.loading = false
+        state.error = true;
+        state.loading = false;
       })
       .addCase(updateReservation.pending, (state) => {
         state.loading = true;
       })
       .addCase(updateReservation.fulfilled, (state, action) => {
+        state.error = false;
         state.success = false;
         state.reservations = state.reservations.map((reservation) => (
           reservation.id === action.payload.id ? action.payload : reservation
@@ -159,6 +167,7 @@ const reservationsSlice = createSlice({
         state.success = true;
       })
       .addCase(updateReservation.rejected, (state) => {
+        state.error = true;
         state.loading = false;
       })
   },

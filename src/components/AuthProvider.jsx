@@ -2,6 +2,15 @@ import { useEffect, useState } from "react";
 import { AuthContext } from "../context";
 import { auth } from "../firebase";
 import axios from "axios";
+import { Spinner } from "react-bootstrap";
+
+function FullPageSpinner() {
+  return (
+    <div className="d-flex justify-content-center align-items-center vh-100">
+      <Spinner animation="grow" role="status" />
+    </div>
+  );
+}
 
 export default function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -36,7 +45,9 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ currentUser, userDetails, authLoading }}>
-      {!authLoading && children}
+      {
+        authLoading ? <FullPageSpinner /> : children
+      }
     </AuthContext.Provider>
   )
 }

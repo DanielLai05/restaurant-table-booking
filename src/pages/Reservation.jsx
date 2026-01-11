@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context";
-import { Container, Card, Row, Col, Spinner, Button, Modal } from "react-bootstrap";
+import { Container, Card, Row, Col, Spinner, Button, Modal, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteReservaiton, fetchReservationsByUser } from "../features/reservation/reservationsSlice";
@@ -8,9 +8,8 @@ import { deleteReservaiton, fetchReservationsByUser } from "../features/reservat
 export default function Reservation() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedReservationId, setSelectedReservationId] = useState(null);
-  const { reservations } = useSelector(store => store.reservations);
-  const { loading } = useSelector(store => store.reservations);
-  const { userDetails, currentUser, authLoading } = useContext(AuthContext);
+  const { reservations, loading, error } = useSelector(store => store.reservations);
+  const { userDetails, currentUser, authLoading, } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -35,14 +34,18 @@ export default function Reservation() {
     handleCloseDeleteModal();
   }
 
-
-  // show title
-
   return (
     <Container className="py-4">
       <h2 className="mb-4">
         {userDetails?.name}'s Reservation History
       </h2>
+
+      {
+        error &&
+        <Alert variant='danger' dismissible>
+          An error occour. Please try again later.
+        </Alert>
+      }
 
       {
         loading ? (
@@ -65,6 +68,16 @@ export default function Reservation() {
                     </Card.Text>
 
                     <Card.Text>
+                      <strong>Title:</strong>{" "}
+                      {reservation.title}
+                    </Card.Text>
+
+                    <Card.Text>
+                      <strong>Description:</strong>{" "}
+                      {reservation.description}
+                    </Card.Text>
+
+                    <Card.Text>
                       <strong>Guests:</strong>{" "}
                       {reservation.number_of_guest}
                     </Card.Text>
@@ -84,10 +97,7 @@ export default function Reservation() {
                       {reservation.phone_number}
                     </Card.Text>
 
-                    <Card.Text>
-                      <strong>Description:</strong>{" "}
-                      {reservation.description}
-                    </Card.Text>
+
 
                     <Button variant="primary" className="me-2" onClick={() => navigate(`/reservation/${reservation.id}`)}>UPDATE</Button>
                     <Button variant="danger" onClick={() => handleShowDeleteModal(reservation.id)}>DELETE</Button>

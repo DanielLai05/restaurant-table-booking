@@ -17,7 +17,7 @@ export default function UpdateReservation() {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const { userDetails } = useContext(AuthContext);
-  const { reservations, loading, success } = useSelector((store) => store.reservations);
+  const { reservations, loading, success, error } = useSelector((store) => store.reservations);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -138,6 +138,13 @@ export default function UpdateReservation() {
             onChange={(e) => setPhoneNumber(e.target.value)}
           />
         </Form.Group>
+
+        {
+          error && !loading &&
+          <Alert variant='danger' dismissible>
+            An error occour. Please try again later.
+          </Alert>
+        }
 
         {
           !loading && !success && <Button
