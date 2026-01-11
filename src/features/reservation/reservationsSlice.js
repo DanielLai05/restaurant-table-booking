@@ -8,6 +8,7 @@ export const fetchReservationsByUser = createAsyncThunk(
   async (userId) => {
     try {
       const response = await axios.get(`${baseUrl}/reservation/${userId}`);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -68,13 +69,27 @@ export const deleteReservaiton = createAsyncThunk(
 export const updateReservation = createAsyncThunk(
   "reservation/updateReservation",
   async (reservationData) => {
-    if (reservationData) {
-      throw new Error('Missing reservation id');
+    const { id, date, time, numberOfGuest, title, description, fullName, email, phoneNumber } =
+      reservationData;
+
+    if (!(date && time && numberOfGuest && title && description && fullName && email && phoneNumber)) {
+      throw new Error("Missing required reservation fields");
     }
 
+    const formattedDate = `${date}T${time}+08:00`;
+
     try {
-      const response = await axios.put(`${baseUrl}/reservation`, reservationData);
-      return response.data;
+      const response = await axios.put(`${baseUrl}/reservation`, {
+        id,
+        date: formattedDate,
+        number_of_guest: numberOfGuest,
+        full_name: fullName,
+        email,
+        phone_number: phoneNumber,
+        description,
+        title
+      });
+      return response.data.details;
     } catch (error) {
       console.error(error);
       throw error;
@@ -133,12 +148,15 @@ const reservationsSlice = createSlice({
         state.loading = false
       })
       .addCase(updateReservation.pending, (state) => {
-        state.loading = false;
+        state.loading = true;
       })
       .addCase(updateReservation.fulfilled, (state, action) => {
+        state.success = false;
         state.reservations = state.reservations.map((reservation) => (
           reservation.id === action.payload.id ? action.payload : reservation
         ))
+        state.loading = false;
+        state.success = true;
       })
       .addCase(updateReservation.rejected, (state) => {
         state.loading = false;

@@ -81,7 +81,7 @@ export default function LoginPage() {
         <Col
           lg={6}
           className="d-none d-lg-block p-0"
-          style={{ background: "url('https://firebasestorage.googleapis.com/v0/b/restaurant-table-booking-a1302.firebasestorage.app/o/login-page-background.png?alt=media&token=67af9978-1995-471a-bb0f-f9fa4a393d64') center/cover no-repeat" }}
+          style={{ background: "url('https://firebasestorage.googleapis.com/v0/b/restaurant-table-booking-a1302.firebasestorage.app/o/Jerome%20Steakhouse%20Login.png?alt=media&token=f51ad9a6-1fa7-4b99-915c-130baed7d0dd') center/cover no-repeat" }}
         />
         <Col
           xs={12}
@@ -91,7 +91,7 @@ export default function LoginPage() {
 
         >
           <Container className='mt-5 p-md-5' >
-            <h1 className='mb-5 fst-italic'>TempahNow</h1>
+            <h1 className='mb-5 fst-italic'>Jerome's Steakhouse</h1>
             <h2>Login</h2>
             <Form className='mt-3' onSubmit={handleLogin}>
               <Form.Group>

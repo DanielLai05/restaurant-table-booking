@@ -11,6 +11,8 @@ import store from "./store";
 import UpdateReservation from "./pages/UpdateReservation";
 
 export default function App() {
+
+  //show error messsage for all pages 
   return (
     <AuthProvider>
       <Provider store={store}>

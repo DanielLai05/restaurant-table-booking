@@ -43,6 +43,8 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
     if (success && !loading) {
       setShowAlert(true);
       resetForm();
+    } else {
+      dispatch(resetReservationState());
     }
   }, [success, loading])
 
@@ -116,7 +118,8 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
                 <Form.Group className="mt-2">
                   <FloatingLabel label="Description" className="mb-3">
                     <Form.Control
-                      type="text"
+                      as='textarea'
+                      rows={3}
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="Jerome Birthday party"
