@@ -27,10 +27,12 @@ function NavigationBar() {
           <Navbar.Toggle />
           <Navbar.Collapse>
             <Nav className="me-auto">
+              <Nav.Link as={Link} to="/">
+                HOME
+              </Nav.Link>
               <Nav.Link as={Link} to="/menu">
                 MENU
               </Nav.Link>
-
               {currentUser && (
                 <>
                   <Nav.Link
