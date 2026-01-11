@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react'
-import { FloatingLabel, Form, Modal, Row, Col, Button, Spinner } from 'react-bootstrap';
+import React, { useContext, useEffect, useState } from 'react'
+import { FloatingLabel, Form, Modal, Row, Col, Button, Spinner, Alert } from 'react-bootstrap';
 import { AuthContext } from '../context';
 import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { createReservation } from '../features/reservation/reservationsSlice';
+import { createReservation, resetReservationState } from '../features/reservation/reservationsSlice';
 
 
 export default function MakeReservationModal({ showModal, setShowModal }) {
@@ -16,19 +16,40 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-
+  const [showAlert, setShowAlert] = useState(false);
   const { currentUser, userDetails } = useContext(AuthContext);
-  const { loading } = useSelector(state => state.reservations);
+  const { loading, success } = useSelector(state => state.reservations);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleCloseModal = () => setShowModal(false);
+
+  const resetForm = () => {
+    setDate('');
+    setTime('');
+    setNumberOfGuest(1);
+    setTitle('');
+    setDescription('');
+    setFullName('');
+    setEmail('');
+    setPhoneNumber('');
+  };
+
+  const handleCloseModal = () => {
+    dispatch(resetReservationState());
+    setShowModal(false);
+    setShowAlert(false);
+  };
+
+  useEffect(() => {
+    if (success && !loading) {
+      setShowAlert(true);
+      resetForm();
+    }
+  }, [success, loading])
 
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(createReservation({ date, time, numberOfGuest, title, description, fullName, email, phoneNumber, userId: userDetails.id }));
   }
-
-  //add reservation created message in react alert
 
   return (
     <Modal show={showModal} onHide={handleCloseModal} centered>
@@ -140,6 +161,13 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
                   </FloatingLabel>
                 </Form.Group>
 
+                {
+                  showAlert &&
+                  <Alert variant='success' onClose={() => setShowAlert(false)} dismissible>
+                    Congratulation! Your reservation has been confirm.
+                  </Alert>
+
+                }
 
               </Modal.Body>
 

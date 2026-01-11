@@ -87,6 +87,13 @@ const reservationsSlice = createSlice({
   initialState: {
     reservations: [],
     loading: false,
+    success: false
+  },
+  reducers: {
+    resetReservationState: (state) => {
+      state.loading = false;
+      state.success = false;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -104,10 +111,12 @@ const reservationsSlice = createSlice({
         state.loading = true;
       })
       .addCase(createReservation.fulfilled, (state, action) => {
+        state.success = false;
         if (action.payload) {
           state.reservations.push(action.payload);
         }
         state.loading = false;
+        state.success = true;
       })
       .addCase(createReservation.rejected, (state) => {
         state.loading = false;
@@ -138,5 +147,5 @@ const reservationsSlice = createSlice({
 });
 
 
-
+export const { resetReservationState } = reservationsSlice.actions;
 export default reservationsSlice.reducer;
