@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [modalShow, setModalShow] = useState(false);
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const baseUrl = 'http://localhost:3000';
+  const baseUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     if (currentUser) {

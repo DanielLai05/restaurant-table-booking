@@ -4,6 +4,8 @@ import { auth } from "../firebase";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
 
+const baseUrl = import.meta.env.VITE_API_URL;
+
 function FullPageSpinner() {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
@@ -19,7 +21,7 @@ export default function AuthProvider({ children }) {
 
   const fetchUser = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/users/${userId}`);
+      const response = await axios.get(`${baseUrl}/users/${userId}`);
       setUserDetails(response.data);
     } catch (error) {
       console.error(error);
