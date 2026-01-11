@@ -3,7 +3,7 @@ import { AuthContext } from "../context";
 import { Container, Card, Row, Col, Spinner, Button, Modal, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteReservaiton, fetchReservationsByUser } from "../features/reservation/reservationsSlice";
+import { deleteReservaiton, fetchReservationsByUser, resetReservationState } from "../features/reservation/reservationsSlice";
 
 export default function Reservation() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -21,6 +21,10 @@ export default function Reservation() {
     }
 
   }, [currentUser, navigate, dispatch, userDetails, authLoading]);
+
+  useEffect(() => {
+    dispatch(resetReservationState());
+  }, [dispatch])
 
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
   const handleShowDeleteModal = (id) => {

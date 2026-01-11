@@ -31,10 +31,6 @@ function NavigationBar() {
                 MENU
               </Nav.Link>
 
-              <Nav.Link as={Link} to="/">
-                ABOUT US
-              </Nav.Link>
-
               {currentUser && (
                 <>
                   <Nav.Link
