@@ -8,7 +8,6 @@ export const fetchReservationsByUser = createAsyncThunk(
   async (userId) => {
     try {
       const response = await axios.get(`${baseUrl}/reservation/${userId}`);
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error(error);
