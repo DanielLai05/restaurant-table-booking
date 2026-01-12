@@ -56,6 +56,10 @@ export default function Reservation() {
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
+        ) : reservations.length === 0 ? (
+          <Alert variant='info'>
+            No reservations found.
+          </Alert>
         ) : (
           <Row className="g-4">
             {reservations && reservations.map((reservation, index) => (
