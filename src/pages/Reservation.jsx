@@ -14,9 +14,9 @@ export default function Reservation() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!authLoading && !currentUser) {
+    if (authLoading && !currentUser && !userDetails.id) {
       navigate('/');
-    } else if (currentUser) {
+    } else if (currentUser && userDetails?.id) {
       dispatch(fetchReservationsByUser(userDetails.id));
     }
 
@@ -40,10 +40,9 @@ export default function Reservation() {
 
   return (
     <Container className="py-4">
-      <h2 className="mb-4">
-        {userDetails?.name}'s Reservation History
-      </h2>
-
+      {
+        userDetails && <h2 className="mb-4">{userDetails?.name}'s Reservation History</h2>
+      }
       {
         error && reservations.length !== 0 &&
         <Alert variant='danger' dismissible>
@@ -52,7 +51,7 @@ export default function Reservation() {
       }
 
       {
-        loading ? (
+        loading || authLoading ? (
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
@@ -132,5 +131,7 @@ export default function Reservation() {
         </Modal.Footer>
       </Modal>
     </Container>
+
+
   );
 }
