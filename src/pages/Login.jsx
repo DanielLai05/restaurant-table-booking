@@ -127,7 +127,7 @@ export default function LoginPage() {
                     required
                   />
                   <Button
-                    variant='secondary'
+                    variant='light'
                     onClick={() => setShowLoginPassword(!showLoginPassword)}
                   >{showLoginPassword ? <i className="bi bi-eye"></i> : <i className="bi bi-eye-slash"></i>}</Button>
                 </InputGroup>
