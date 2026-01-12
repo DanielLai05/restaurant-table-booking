@@ -1,19 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import { AuthContext } from '../context';
-import { Col, Container, Row, Form, Button, Modal } from 'react-bootstrap';
+import { Col, Container, Row, Form, Button, Modal, InputGroup } from 'react-bootstrap';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 
 export default function LoginPage() {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [error, setError] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupReEnterPassword, setSignupReEnterPassword] = useState('');
   const [signupName, setSignupName] = useState('')
   const [modalShow, setModalShow] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { currentUser, signup } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -36,6 +38,11 @@ export default function LoginPage() {
       console.error(error);
       setError('invalid-login-credentials');
     }
+  }
+
+  const handleShowModal = () => {
+    setShowPassword(false);
+    setModalShow(true);
   }
 
   const handleClose = () => {
@@ -103,13 +110,19 @@ export default function LoginPage() {
               </Form.Group>
               <Form.Group className='mt-3 mb-3'>
                 <Form.Label>Password</Form.Label>
-                <Form.Control
-                  value={loginPassword}
-                  placeholder='password'
-                  type='password'
-                  onChange={(e) => setLoginPassword(e.target.value)}
-                  required
-                />
+                <InputGroup>
+                  <Form.Control
+                    value={loginPassword}
+                    placeholder='password'
+                    type={showLoginPassword ? 'text' : 'password'}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    required
+                  />
+                  <Button
+                    variant='light'
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                  >{showLoginPassword ? <i className="bi bi-eye"></i> : <i className="bi bi-eye-slash"></i>}</Button>
+                </InputGroup>
                 {
                   error === 'invalid-login-credentials' && <Form.Text className='text-danger'>
                     Invalid email or password
@@ -124,7 +137,7 @@ export default function LoginPage() {
               <Button
                 variant='link'
                 className='p-1 text-success'
-                onClick={() => setModalShow(true)}
+                onClick={handleShowModal}
               >Sign-Up</Button>
               now</div>
 
@@ -166,29 +179,41 @@ export default function LoginPage() {
             </Form.Group>
             <Form.Group className='mt-3 '>
               <Form.Label>Password</Form.Label>
-              <Form.Control
-                value={signupPassword}
-                placeholder='enter your password here'
-                type='password'
-                onChange={(e) => setSignupPassword(e.target.value)}
-                required
-              />
+              <InputGroup>
+                <Form.Control
+                  value={signupPassword}
+                  placeholder='enter your password here'
+                  type={showPassword ? 'text' : 'password'}
+                  onChange={(e) => setSignupPassword(e.target.value)}
+                  required
+                />
+                <Button
+                  variant='outline-secondary'
+                  onClick={() => setShowPassword(!showPassword)}
+                >{showPassword ? <i className="bi bi-eye"></i> : <i className="bi bi-eye-slash"></i>}</Button>
+              </InputGroup>
 
               <Form.Text
-                className={error === 'invalid-password-pattern' ? 'text-danger' : ''}
+                className={signupPassword && !/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/.test(signupPassword) ? 'text-danger' : ''}
               >Password must contain a capital letter, lowercase letter, number, and min length of 8</Form.Text>
             </Form.Group>
             <Form.Group className='mt-3 '>
               <Form.Label>Re-enter Password</Form.Label>
-              <Form.Control
-                value={signupReEnterPassword}
-                placeholder='re-enter your passsword here'
-                type='password'
-                onChange={(e) => setSignupReEnterPassword(e.target.value)}
-                required
-              />
+              <InputGroup>
+                <Form.Control
+                  value={signupReEnterPassword}
+                  placeholder='re-enter your passsword here'
+                  type={showPassword ? 'text' : 'password'}
+                  onChange={(e) => setSignupReEnterPassword(e.target.value)}
+                  required
+                />
+                <Button
+                  variant='outline-secondary'
+                  onClick={() => setShowPassword(!showPassword)}
+                >{showPassword ? <i className="bi bi-eye"></i> : <i className="bi bi-eye-slash"></i>}</Button>
+              </InputGroup>
               {
-                error === 'unmatch-password' &&
+                signupReEnterPassword && signupPassword !== signupReEnterPassword &&
                 <Form.Text className='text-danger'>Password not match</Form.Text>
               }
             </Form.Group>
