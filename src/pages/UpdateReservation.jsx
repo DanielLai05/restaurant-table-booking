@@ -16,16 +16,18 @@ export default function UpdateReservation() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const { userDetails } = useContext(AuthContext);
+  const { userDetails, authLoading, currentUser } = useContext(AuthContext);
   const { reservations, loading, success, error } = useSelector((store) => store.reservations);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userDetails?.id) {
+    if (!authLoading && !currentUser) {
+      navigate('/');
+    } else if (userDetails?.id) {
       dispatch(fetchReservationsByUser(userDetails.id));
     }
-  }, [dispatch, userDetails]);
+  }, [dispatch, userDetails, authLoading, currentUser, navigate]);
 
   const currentReservation = reservations.find(r => r.id === reservationId);
 
