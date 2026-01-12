@@ -71,7 +71,7 @@ export default function LoginPage() {
     }
     setSignupLoading(true);
     try {
-      await signup(signupEmail, signupPassword, signupName);
+      await signup(signupEmail, signupPassword, signupName.trim());
       setError('')
       setModalShow(false);
       setSignupEmail('');
