@@ -45,7 +45,7 @@ export default function Reservation() {
       </h2>
 
       {
-        error &&
+        error && reservations.length !== 0 &&
         <Alert variant='danger' dismissible>
           An error occour. Please try again later.
         </Alert>

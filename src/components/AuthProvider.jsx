@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "../context";
 import { auth } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
 
@@ -29,6 +30,19 @@ export default function AuthProvider({ children }) {
     }
   }
 
+  const signup = async (email, password, name) => {
+    const { user } = await createUserWithEmailAndPassword(auth, email, password);
+    const { uid } = user;
+
+    await axios.post(`${baseUrl}/signup`, {
+      id: uid,
+      name,
+      email
+    })
+
+    await fetchUser(uid);
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
@@ -46,7 +60,7 @@ export default function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, userDetails, authLoading }}>
+    <AuthContext.Provider value={{ currentUser, userDetails, authLoading, signup }}>
       {
         authLoading ? <FullPageSpinner /> : children
       }

@@ -40,6 +40,12 @@ export default function MakeReservationModal({ showModal, setShowModal }) {
   };
 
   useEffect(() => {
+    if (!showModal) {
+      dispatch(resetReservationState());
+    }
+  }, [showModal, dispatch]);
+
+  useEffect(() => {
     if (success) {
       setShowAlert(true);
       resetForm();

@@ -2,9 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import { AuthContext } from '../context';
 import { Col, Container, Row, Form, Button, Modal } from 'react-bootstrap';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
-import axios from 'axios';
 
 export default function LoginPage() {
   const [loginEmail, setLoginEmail] = useState('');
@@ -15,9 +14,9 @@ export default function LoginPage() {
   const [signupReEnterPassword, setSignupReEnterPassword] = useState('');
   const [signupName, setSignupName] = useState('')
   const [modalShow, setModalShow] = useState(false);
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, signup } = useContext(AuthContext);
   const navigate = useNavigate();
-  const baseUrl = import.meta.env.VITE_API_URL;
+
 
   useEffect(() => {
     if (currentUser) {
@@ -59,16 +58,13 @@ export default function LoginPage() {
       return;
     }
     try {
-      const { user } = await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
-      const { uid, email } = user;
-      // console.log(`${uid} ${email}`);
-      const res = await axios.post(`${baseUrl}/signup`, {
-        id: uid,
-        name: signupName,
-        email
-      })
-      console.log(res);
+      await signup(signupEmail, signupPassword, signupName);
       setError('')
+      setModalShow(false);
+      setSignupEmail('');
+      setSignupPassword('');
+      setSignupReEnterPassword('');
+      setSignupName('');
     } catch (error) {
       console.error(error);
       setError('taken-email');
