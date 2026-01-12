@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import { AuthContext } from '../context';
-import { Col, Container, Row, Form, Button, Modal, InputGroup } from 'react-bootstrap';
+import { Col, Container, Row, Form, Button, Modal, InputGroup, Spinner } from 'react-bootstrap';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 
@@ -10,10 +10,12 @@ export default function LoginPage() {
   const [loginPassword, setLoginPassword] = useState('');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
   const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
   const [signupReEnterPassword, setSignupReEnterPassword] = useState('');
   const [signupName, setSignupName] = useState('')
+  const [signupLoading, setSignupLoading] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { currentUser, signup } = useContext(AuthContext);
@@ -28,6 +30,7 @@ export default function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoginLoading(true);
     try {
       await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
       setLoginEmail('');
@@ -37,6 +40,8 @@ export default function LoginPage() {
     } catch (error) {
       console.error(error);
       setError('invalid-login-credentials');
+    } finally {
+      setLoginLoading(false);
     }
   }
 
@@ -64,6 +69,7 @@ export default function LoginPage() {
       console.log(error);
       return;
     }
+    setSignupLoading(true);
     try {
       await signup(signupEmail, signupPassword, signupName);
       setError('')
@@ -75,6 +81,8 @@ export default function LoginPage() {
     } catch (error) {
       console.error(error);
       setError('taken-email');
+    } finally {
+      setSignupLoading(false);
     }
   }
   return (
@@ -119,7 +127,7 @@ export default function LoginPage() {
                     required
                   />
                   <Button
-                    variant='light'
+                    variant='secondary'
                     onClick={() => setShowLoginPassword(!showLoginPassword)}
                   >{showLoginPassword ? <i className="bi bi-eye"></i> : <i className="bi bi-eye-slash"></i>}</Button>
                 </InputGroup>
@@ -131,7 +139,15 @@ export default function LoginPage() {
                 }
               </Form.Group>
 
-              <Button variant='success' type='submit'>Login</Button>
+              <Button variant='success' type='submit' disabled={loginLoading}>
+                {
+                  loginLoading ? (
+                    <Spinner animation="border" role="status" size='sm'>
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  ) : 'Login'
+                }
+              </Button>
             </Form>
             <div className='my-2 d-flex align-items-center'>Not register?
               <Button
@@ -217,8 +233,14 @@ export default function LoginPage() {
                 <Form.Text className='text-danger'>Password not match</Form.Text>
               }
             </Form.Group>
-            <Button variant="success" className='w-100 mt-3' type='submit'>
-              Sign-Up
+            <Button variant="success" className='w-100 mt-3' type='submit' disabled={signupLoading}>
+              {
+                signupLoading ? (
+                  <Spinner animation="border" role="status" size='sm'>
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                ) : 'Sign-Up'
+              }
             </Button>
           </Form>
         </Modal.Body>
