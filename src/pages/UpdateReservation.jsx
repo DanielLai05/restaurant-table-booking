@@ -12,6 +12,7 @@ import { AuthContext } from '../context';
 export default function UpdateReservation() {
   const { id } = useParams();
   const reservationId = parseInt(id);
+
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [numberOfGuest, setNumberOfGuests] = useState('');
@@ -45,14 +46,14 @@ export default function UpdateReservation() {
     if (currentReservation) {
       const localDate = new Date(currentReservation.date);
 
-      setDate(localDate.toISOString().split('T')[0]);
-      setTime(
-        localDate.toLocaleTimeString('ms-MY', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: false
-        })
-      );
+      const year = localDate.getFullYear();
+      const month = String(localDate.getMonth() + 1).padStart(2, '0');
+      const day = String(localDate.getDate()).padStart(2, '0');
+      const hours = String(localDate.getHours()).padStart(2, '0');
+      const minutes = String(localDate.getMinutes()).padStart(2, '0');
+
+      setDate(`${year}-${month}-${day}`);
+      setTime(`${hours}:${minutes}`);
       setNumberOfGuests(currentReservation.number_of_guest || '');
       setTitle(currentReservation.title || '');
       setDescription(currentReservation.description || '');
@@ -68,13 +69,11 @@ export default function UpdateReservation() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const localDateTime = new Date(`${date}T${time}`);
-    const utcDate = localDateTime.toISOString();
-
     dispatch(
       updateReservation({
         id: currentReservation.id,
-        date: utcDate,
+        date,
+        time,
         numberOfGuest,
         title,
         description,
@@ -184,10 +183,10 @@ export default function UpdateReservation() {
         {success && !loading ? (
           <Alert variant="success" className="text-center">
             <Alert.Heading>Success</Alert.Heading>
-            <p>Your reservation has been updated</p>
+            <p>Your Reservation has been updated</p>
             <Button
-              variant="outline-success"
               onClick={() => navigate('/reservation')}
+              variant="outline-success"
             >
               Back to View Reservation
             </Button>
