@@ -92,7 +92,7 @@ export default function LoginPage() {
         <Col
           lg={6}
           className="d-none d-lg-block p-0"
-          style={{ background: "url('https://firebasestorage.googleapis.com/v0/b/restaurant-table-booking-a1302.firebasestorage.app/o/Jerome%20Steakhouse%20Login.png?alt=media&token=f51ad9a6-1fa7-4b99-915c-130baed7d0dd') center/cover no-repeat" }}
+          style={{ background: "url('https://firebasestorage.googleapis.com/v0/b/restaurant-table-booking-a1302.firebasestorage.app/o/jerome-steakhouse-image.png?alt=media&token=b2bbe3e3-bf55-4eab-b4d8-ce5aeccc1636') center/cover no-repeat" }}
         />
         <Col
           xs={12}
