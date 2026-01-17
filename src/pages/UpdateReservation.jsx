@@ -2,7 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Button, Container, Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
-import { fetchReservationsByUser, resetReservationState, updateReservation } from '../features/reservation/reservationsSlice';
+import {
+  fetchReservationsByUser,
+  resetReservationState,
+  updateReservation
+} from '../features/reservation/reservationsSlice';
 import { AuthContext } from '../context';
 
 export default function UpdateReservation() {
@@ -16,8 +20,12 @@ export default function UpdateReservation() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+
   const { userDetails, authLoading, currentUser } = useContext(AuthContext);
-  const { reservations, loading, success, error } = useSelector((store) => store.reservations);
+  const { reservations, loading, success, error } = useSelector(
+    (store) => store.reservations
+  );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,15 +37,22 @@ export default function UpdateReservation() {
     }
   }, [dispatch, userDetails, authLoading, currentUser, navigate]);
 
-  const currentReservation = reservations.find(r => r.id === reservationId);
+  const currentReservation = reservations.find(
+    (r) => r.id === reservationId
+  );
 
   useEffect(() => {
     if (currentReservation) {
-      const dateOnly = currentReservation.date.split('T')[0];
-      const timeOnly = currentReservation.date.split('T')[1].slice(0, 5);
+      const localDate = new Date(currentReservation.date);
 
-      setDate(dateOnly);
-      setTime(timeOnly);
+      setDate(localDate.toISOString().split('T')[0]);
+      setTime(
+        localDate.toLocaleTimeString('ms-MY', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        })
+      );
       setNumberOfGuests(currentReservation.number_of_guest || '');
       setTitle(currentReservation.title || '');
       setDescription(currentReservation.description || '');
@@ -49,142 +64,148 @@ export default function UpdateReservation() {
 
   useEffect(() => {
     dispatch(resetReservationState());
-  }, [dispatch])
-
+  }, [dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateReservation({ id: currentReservation.id, date, time, numberOfGuest, title, description, fullName, email, phoneNumber, userId: userDetails.id }))
-  }
+    const localDateTime = new Date(`${date}T${time}`);
+    const utcDate = localDateTime.toISOString();
+
+    dispatch(
+      updateReservation({
+        id: currentReservation.id,
+        date: utcDate,
+        numberOfGuest,
+        title,
+        description,
+        fullName,
+        email,
+        phoneNumber,
+        userId: userDetails.id
+      })
+    );
+  };
 
   return (
-
-    <Container className='my-3'>
+    <Container className="my-3">
       <h2>Reservation #{currentReservation?.id}</h2>
+
       <Form onSubmit={handleSubmit}>
-        <Form.Group className='mb-3'>
+        <Form.Group className="mb-3">
           <Form.Label>Date</Form.Label>
           <Form.Control
-            type='date'
+            type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
         </Form.Group>
 
-        <Form.Group className='mb-3'>
+        <Form.Group className="mb-3">
           <Form.Label>Time</Form.Label>
           <Form.Control
-            type='time'
+            type="time"
             value={time}
             onChange={(e) => setTime(e.target.value)}
           />
         </Form.Group>
 
-        <Form.Group className='mb-3'>
+        <Form.Group className="mb-3">
           <Form.Label>Number of Guests</Form.Label>
           <Form.Control
-            type='number'
-            min='1'
+            type="number"
+            min="1"
             value={numberOfGuest}
             onChange={(e) => setNumberOfGuests(e.target.value)}
           />
         </Form.Group>
 
-        <Form.Group className='mb-3'>
+        <Form.Group className="mb-3">
           <Form.Label>Title</Form.Label>
           <Form.Control
-            type='text'
-            placeholder='Reservation title'
+            type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </Form.Group>
 
-        <Form.Group className='mb-3'>
+        <Form.Group className="mb-3">
           <Form.Label>Description</Form.Label>
           <Form.Control
-            as='textarea'
+            as="textarea"
             rows={3}
-            placeholder='Additional notes or requests'
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </Form.Group>
 
-        <Form.Group className='mb-3'>
+        <Form.Group className="mb-3">
           <Form.Label>Full Name</Form.Label>
           <Form.Control
-            type='text'
-            placeholder='Enter full name'
+            type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
           />
         </Form.Group>
 
-        <Form.Group className='mb-3'>
+        <Form.Group className="mb-3">
           <Form.Label>Email</Form.Label>
           <Form.Control
-            type='email'
-            placeholder='Enter email'
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
 
-        <Form.Group className='mb-3'>
+        <Form.Group className="mb-3">
           <Form.Label>Phone Number</Form.Label>
           <Form.Control
-            type='tel'
-            placeholder='Enter phone number'
+            type="tel"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
           />
         </Form.Group>
 
-        {
-          error && !loading &&
-          <Alert variant='danger' dismissible>
-            An error occour. Please try again later.
+        {error && !loading && (
+          <Alert variant="danger">
+            An error occurred. Please try again later.
           </Alert>
-        }
+        )}
 
-        {
-          !loading && !success && <Button
-            variant='secondary'
-            className='mt-2 mb-2 w-100'
+        {!loading && !success && (
+          <Button
+            variant="secondary"
+            className="mt-2 mb-2 w-100"
             onClick={() => navigate('/reservation')}
-          >CANCEL</Button>
-        }
+          >
+            CANCEL
+          </Button>
+        )}
 
-        {
-          success && !loading ? (
-            <Alert show={true} variant="success" className='text-center'>
-              <Alert.Heading>Success</Alert.Heading>
-              <p>
-                Your Reservation has been updated
-              </p>
-              <div >
-                <Button onClick={() => navigate('/reservation')} variant="outline-success">
-                  Back to View Reservation
-                </Button>
-              </div>
-            </Alert>
-          ) : (
-            <Button type='submit' className='w-100'>
-              {
-                loading ? <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                /> : 'UPDATE'
-              }
+        {success && !loading ? (
+          <Alert variant="success" className="text-center">
+            <Alert.Heading>Success</Alert.Heading>
+            <p>Your reservation has been updated</p>
+            <Button
+              variant="outline-success"
+              onClick={() => navigate('/reservation')}
+            >
+              Back to View Reservation
             </Button>
-          )
-        }
-
-
+          </Alert>
+        ) : (
+          <Button type="submit" className="w-100">
+            {loading ? (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+              />
+            ) : (
+              'UPDATE'
+            )}
+          </Button>
+        )}
       </Form>
     </Container>
   );
