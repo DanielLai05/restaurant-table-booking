@@ -107,7 +107,10 @@ export default function Menu() {
               <Nav variant="pills" className="justify-content-center flex-wrap gap-2">
                 {Object.keys(menuData).map((cat) => (
                   <Nav.Item key={cat}>
-                    <Nav.Link eventKey={cat} className="px-4 py-2 fw-bold text-capitalize">
+                    <Nav.Link
+                      eventKey={cat}
+                      className="px-4 py-2 fw-bold text-capitalize text-warning border border-warning rounded-pill"
+                    >
                       {cat}
                     </Nav.Link>
                   </Nav.Item>
