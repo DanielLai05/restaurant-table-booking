@@ -14,7 +14,7 @@ export default function Reservation() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (authLoading && !currentUser && !userDetails.id) {
+    if (authLoading && !currentUser && !userDetails?.id) {
       navigate('/');
     } else if (currentUser && userDetails?.id) {
       dispatch(fetchReservationsByUser(userDetails.id));
